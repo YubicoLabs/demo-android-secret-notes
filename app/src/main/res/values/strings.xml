@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">SecretNotes</string>
+
+    <string name="new_note">New</string>
+    <string name="save_note">Save</string>
+    <string name="note_title">Title</string>
+    <string name="note_content">Content</string>
 </resources>
