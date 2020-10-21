@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class MainViewModel : ViewModel() {
-    private val noteStore = linkedMapOf("One" to "lorem ipsum", "Two" to "The brown fox")
+    private val noteStore = linkedMapOf<String, String>()
 
     private val _noteList = MutableLiveData(noteStore.keys.toList().sorted())
     val noteList: LiveData<List<String>> = _noteList
