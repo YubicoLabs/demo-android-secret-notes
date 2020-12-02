@@ -1,11 +1,17 @@
 package com.yubico.example.secretnotes.ui.main
 
 import android.os.Bundle
+import android.util.Base64
 import android.view.*
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.yubico.example.secretnotes.R
+import com.yubico.example.secretnotes.piv.PivDecryptMessageContract
+import com.yubico.example.secretnotes.piv.PivGetPublicKeyContract
+import com.yubico.yubikit.core.util.Pair
+import com.yubico.yubikit.piv.Slot
+import javax.crypto.Cipher
 
 private const val ARG_NOTE_ID = "NOTE_ID"
 
@@ -16,6 +22,16 @@ private const val ARG_NOTE_ID = "NOTE_ID"
  */
 class NoteFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
+
+    private val requestPublicKey = registerForActivityResult(PivGetPublicKeyContract()) {
+        viewModel.publicKey = it
+    }
+
+    private val requestDecrypt = registerForActivityResult(PivDecryptMessageContract()) {
+        if (it != null) {
+            contentEditText.setText(it.decodeToString())
+        }
+    }
 
     private var noteId: String? = null
 
@@ -44,10 +60,17 @@ class NoteFragment : Fragment() {
         noteId?.let {
             titleEditText.setText(it)
             titleEditText.isEnabled = false
-            contentEditText.setText(viewModel.getNote(it))
+            val note = viewModel.getNote(it)
+            contentEditText.setText(note)
+
+            requestDecrypt.launch(Pair(Slot.KEY_MANAGEMENT, Base64.decode(note, Base64.DEFAULT)))
         }
 
         setHasOptionsMenu(true)
+
+        if (viewModel.publicKey == null) {
+            requestPublicKey.launch(Slot.KEY_MANAGEMENT)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -57,7 +80,14 @@ class NoteFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_save_note -> {
-                viewModel.setNote(titleEditText.text.toString(), contentEditText.text.toString())
+                var content = contentEditText.text.toString()
+                viewModel.publicKey?.let {
+                    val cipher = Cipher.getInstance("RSA")
+                    cipher.init(Cipher.ENCRYPT_MODE, it)
+                    val encrypted = cipher.doFinal(content.encodeToByteArray())
+                    content = Base64.encodeToString(encrypted, Base64.DEFAULT)
+                }
+                viewModel.setNote(titleEditText.text.toString(), content)
                 parentFragmentManager.popBackStack()
             }
         }
