@@ -1,0 +1,33 @@
+== Yubico Android Demo app: SecretNotes
+This toy app is part of a webinar as part of the 2.0.0-beta01 release of the
+https://github.com/Yubico/yubikit-android/[Yubico Mobile SDK for Android].
+Please see the webinar for more details and a walkthrough of the app.
+
+The webinar itself is available to view here:
+https://www.brighttalk.com/webcast/15793/455903
+
+
+=== Requirements
+To build and use this app, you will need Android Studio (4.1 was used for
+development, newer versions will likely also work). You will also need a YubiKey
+with support for the PIV application, and with NFC, such as a YubiKey 5 NFC or
+YubiKey NEO. Lastly, you will need to provision the YubiKey with an RSA2048 key
+in PIV slot 9d (Key Management), which you can do using
+https://github.com/Yubico/yubikey-manager-qt[YubiKey Manager].
+
+
+=== Following along with the webinar
+To follow along with the webinar, clone this repository, and check out one of
+the tags below, which show the code at certain points of the demo.
+
+The starting point of the webinar:
+
+ git checkout webinar-start
+
+The end of the webinar:
+
+ git checkout webinar-end
+
+Return to main:
+
+ git checkout main
