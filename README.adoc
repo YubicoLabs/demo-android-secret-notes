@@ -4,6 +4,8 @@ https://github.com/Yubico/yubikit-android/[Yubico Mobile SDK for Android].
 Please see the webinar for more details and a walkthrough of the app.
 
 The webinar itself is available to view here:
+https://www.youtube.com/watch?v=t2q4fr1e-9s
+or
 https://www.brighttalk.com/webcast/15793/455903
 
 
